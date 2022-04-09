@@ -4,7 +4,7 @@
 		"windowsAuthentication": false,
 		"anonymousAuthentication": true,
 		"iisExpress": {
-			"applicationUrl": "http://WNBADMIT002.STI-GT.LOCAL:39909",
+			"applicationUrl": "http://localhost:39909",
 			"sslPort": 44387
 		}
 	},
@@ -14,7 +14,7 @@
 			"dotnetRunMessages": true,
 			"launchBrowser": false,
 			"launchUrl": "swagger",
-			"applicationUrl": "https://WNBADMIT002.STI-GT.LOCAL:5001;http://WNBADMIT002.STI-GT.LOCAL:5000",
+			"applicationUrl": "https://192.168.0.150:5001;http://192.168.0.150:5000",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Production"
 			}

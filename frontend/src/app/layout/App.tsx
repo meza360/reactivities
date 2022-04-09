@@ -15,7 +15,7 @@ function App() {
 	const [ editMode, setEditMode ] = useState(false);
 
 	useEffect(() => {
-		axios.get<Activity[]>('http://localhost:5000/api/activities').then((response) => {
+		axios.get<Activity[]>('http://192.168.0.150:5000/api/activities').then((response) => {
 			console.log(response);
 			setActivities(response.data);
 		});

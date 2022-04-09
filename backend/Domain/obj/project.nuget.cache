@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mjRDBazNyvoxC4wqO/t6oK6raAWQK3m4ULzviVXmTn30J/QQA+lxA+tW3DIUEy8hAlaNk3aDh3VnMi9uLOPMrw==",
+  "dgSpecHash": "EZHsN95qc9LCCvtycFvpzuBUI4tKdnnFYaSUZTSdJND2cQkmoyjhCnYyXG60+Il9N9yFNJJjQ4KQNDDMPaLnUg==",
   "success": true,
-  "projectFilePath": "D:\\Users\\giova\\Desktop\\AC\\reactivities\\backend\\Domain\\Domain.csproj",
+  "projectFilePath": "/home/gm/Downloads/reactivities/backend/Domain/Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

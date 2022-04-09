@@ -10,7 +10,7 @@ export default function NavigationBar({ openForm }: Props) {
 		<Container fluid className="navigationBar">
 			<Navbar bg="dark" expand="lg" variant="dark">
 				<Container>
-					<Image thumbnail src="/assets/images/toast.jpg" />
+					<Image rounded src="/assets/svg/boy.svg" height={50} />
 					<NavbarBrand>Activities</NavbarBrand>
 					<Button variant="outline-light" size="lg" onClick={openForm}>
 						Create activity
