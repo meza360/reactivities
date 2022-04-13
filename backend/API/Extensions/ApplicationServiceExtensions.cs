@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Oracle.EntityFrameworkCore;
 using MediatR;
 using Persistence;
 
@@ -28,15 +29,21 @@ namespace API.Extensions
                 });
             });
 
+            
+
             services.AddDbContext<DataContext>(opt =>{
-                opt.UseSqlServer(config.GetConnectionString("LocalSqlServer"));
+               opt.UseSqlServer(config.GetConnectionString("LocalSqlServer"));
+                //opt.UseOracle(config.GetConnectionString("LocalOracleServer"));
+                
             });
 
+           
+            
             services.AddAutoMapper(typeof(Application.Core.MappingProfiles).Assembly);
 
             services.AddMediatR(typeof(Application.Activities.ListAll.Handler).Assembly);
-            
 
+            
             return services;
         }
     }

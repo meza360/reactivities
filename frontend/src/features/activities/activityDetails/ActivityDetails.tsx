@@ -16,7 +16,7 @@ function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
 				<Card.Body>
 					<Stack gap={3}>
 						<Card.Title>{activity.title}</Card.Title>
-						<CardImg src={`/assets/images/${activity.category}.jpg`} />
+						<CardImg src={`/assets/images/activities/${activity.category}.jpg`} />
 						<Row>
 							<Card.Text>
 								<Badge pill bg="info">

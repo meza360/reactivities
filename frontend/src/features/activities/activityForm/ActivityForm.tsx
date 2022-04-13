@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 
-import { Form, FormControl, FormGroup, Container, Button, Row, Stack } from 'react-bootstrap';
+import { Form, FormControl, FormGroup, Container, Button, Row, Stack,Spinner } from 'react-bootstrap';
 import { Activity } from '../../../app/models/Activity';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 
 	//this below is temporal
 	createOrEdit: (activity: Activity) => void;
+
 }
 
 function ActivityForm({ activity: selectedActivity, closeForm,createOrEdit }: Props) {
@@ -48,7 +49,7 @@ function ActivityForm({ activity: selectedActivity, closeForm,createOrEdit }: Pr
 					<FormControl type="text" placeholder="Category"value={activity.category} name='category' onChange={handleInputChange} />
 				</FormGroup>
 				<FormGroup className="mb-2">
-					<FormControl type="text" placeholder="Date" value={activity.date} name='date' onChange={handleInputChange}/>
+					<FormControl type="date" placeholder="Date" value={activity.date} name='date' onChange={handleInputChange}/>
 				</FormGroup>
 				<FormGroup className="mb-2">
 					<FormControl type="text" placeholder="City" value={activity.city} name='city' onChange={handleInputChange}/>

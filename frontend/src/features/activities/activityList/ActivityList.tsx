@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, SyntheticEvent, useState } from 'react';
 import { ListGroup, ListGroupItem, Card, Button, Col, Row, Badge, Container } from 'react-bootstrap';
 import { Activity } from '../../../app/models/Activity';
 
@@ -9,6 +9,13 @@ interface Props {
 }
 
 function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
+	const [ target, setTarget ] = useState('');
+
+	function handleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
+		setTarget(e.currentTarget.name);
+		deleteActivity(id);
+	}
+
 	return (
 		<Container>
 			<ListGroup as="ul">
@@ -34,7 +41,11 @@ function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
 								<Button variant="primary" onClick={() => selectActivity(activity.id)}>
 									View Details
 								</Button>
-								<Button variant="danger" onClick={() => deleteActivity(activity.id)}>
+								<Button
+									name={activity.id}
+									variant="danger"
+									onClick={(e) => handleActivityDelete(e, activity.id)}
+								>
 									Delete Activity
 								</Button>
 							</Col>

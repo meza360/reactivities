@@ -37,6 +37,16 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Oracle.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.21.5, )"
+            },
+            "Oracle.ManagedDataAccess.Core": {
+              "target": "Package",
+              "version": "[3.21.50, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

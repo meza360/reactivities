@@ -2,22 +2,33 @@ import React, { Fragment, useEffect, useState } from 'react';
 import './App.css';
 import { Activity } from '../models/Activity';
 import NavBar from './navbar/NavigationBar';
-import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import ActivityDashboard from '../../features/activities/activityDashboard/ActivityDashboard';
+import agent from '../api/agent';
+import Loader from './Loader';
 
 function App() {
 	const [ selectedActivity, setSelectedActivity ] = useState<Activity | undefined>(undefined);
 	const [ activities, setActivities ] = useState<Activity[]>([]);
 	const [ editMode, setEditMode ] = useState(false);
+	const [ loading, setLoading ] = useState(true);
+	const [ submitting, setSubmitting ] = useState(false);
 
 	useEffect(() => {
-		axios.get<Activity[]>('http://192.168.0.150:5000/api/activities').then((response) => {
+		agent.Activities.list().then((response) => {
 			console.log(response);
-			setActivities(response.data);
+
+			//parsing date to just take date and ignore time for date picker html
+			let activities: Activity[] = [];
+			response.forEach((activity) => {
+				activity.date = activity.date.split('T')[0];
+				activities.push(activity);
+			});
+			setActivities(activities);
+			setLoading(false);
 		});
 	}, []);
 
@@ -39,16 +50,37 @@ function App() {
 	}
 
 	function handleCreateOrEditActivity(activity: Activity) {
-		activity.id
-			? setActivities([ ...activities.filter((x) => x.id !== activity.id), activity ])
-			: setActivities([ ...activities, { ...activity, id: uuid() } ]);
-		setEditMode(false);
-		setSelectedActivity(activity);
+		setSubmitting(true);
+		if (activity.id) {
+			agent.Activities.update(activity).then(() => {
+				setActivities([ ...activities.filter((x) => x.id !== activity.id), activity ]);
+				setSelectedActivity(activity);
+				setEditMode(false);
+				setSubmitting(false);
+			});
+		} else {
+			activity.id = uuid();
+			agent.Activities.create(activity).then(() => {
+				setActivities([ ...activities, activity ]);
+				setSelectedActivity(activity);
+				setEditMode(false);
+				setSubmitting(false);
+			});
+		}
 	}
 
 	function handleDeleteActivity(id: string) {
-		setActivities([ ...activities.filter((x) => x.id !== id) ]);
+		setSubmitting(true);
+		agent.Activities.delete(id).then(() => {
+			setActivities([ ...activities.filter((x) => x.id !== id) ]);
+			setSubmitting(false);
+		});
 	}
+
+	if (loading) {
+		return <Loader />;
+	}
+
 	return (
 		<Fragment>
 			<NavBar openForm={handleFormOpen} />
