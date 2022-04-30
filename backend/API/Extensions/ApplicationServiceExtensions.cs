@@ -32,11 +32,12 @@ namespace API.Extensions
             
 
             services.AddDbContext<DataContext>(opt =>{
-               opt.UseSqlServer(config.GetConnectionString("LocalSqlServer"));
-                //opt.UseOracle(config.GetConnectionString("LocalOracleServer"));
+               //opt.UseSqlServer(config.GetConnectionString("LocalSqlServer"));
+                opt.UseOracle(config.GetConnectionString("LocalOracleServer"));
                 
             });
 
+            
            
             
             services.AddAutoMapper(typeof(Application.Core.MappingProfiles).Assembly);

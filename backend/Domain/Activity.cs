@@ -2,15 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Oracle.EntityFrameworkCore.Design;
 
 
 namespace Domain
 {
     public class Activity
     {
-        
-        public Guid Id { get; set; }
+        [Key]
+        public Int16 Id { get; set; }
         public string Title { get; set; }
+        
+        [Column(TypeName ="Date")]
         public DateTime Date { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }

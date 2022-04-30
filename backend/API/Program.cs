@@ -3,6 +3,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Oracle.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
 using API.Extensions;
@@ -26,11 +27,15 @@ var app = builder.Build();
     
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
+
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    
 
     Console.WriteLine("Valor de creacion {0}", context.Database.EnsureCreated());
+    context.Database.Migrate();
+    
 }
 catch (Exception ex)
 {
