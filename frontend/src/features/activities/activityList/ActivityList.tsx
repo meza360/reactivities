@@ -1,15 +1,13 @@
+import { observer } from 'mobx-react-lite';
 import React, { Fragment, SyntheticEvent, useState } from 'react';
 import { ListGroup, ListGroupItem, Card, Button, Col, Row, Badge, Container } from 'react-bootstrap';
 import { Activity } from '../../../app/models/Activity';
+import { useStore } from '../../../app/stores/store';
 
-interface Props {
-	activities: Activity[];
-	selectActivity: (id: string) => void;
-	deleteActivity: (id: string) => void;
-}
-
-function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
+function ActivityList() {
 	const [ target, setTarget ] = useState('');
+	const { activityStore } = useStore();
+	const { deleteActivity, activities,loading } = activityStore;
 
 	function handleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
 		setTarget(e.currentTarget.name);
@@ -38,7 +36,7 @@ function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
 								<Row>{activity.venue}</Row>
 							</Col>
 							<Col>
-								<Button variant="primary" onClick={() => selectActivity(activity.id)}>
+								<Button variant="primary" onClick={() => activityStore.selectActivity(activity.id)}>
 									View Details
 								</Button>
 								<Button
@@ -57,4 +55,4 @@ function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
 	);
 }
 
-export default ActivityList;
+export default observer(ActivityList);

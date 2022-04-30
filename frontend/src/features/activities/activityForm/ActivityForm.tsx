@@ -1,18 +1,13 @@
+import { observer } from 'mobx-react-lite';
 import React, { ChangeEvent, useState } from 'react';
 
 import { Form, FormControl, FormGroup, Container, Button, Row, Stack,Spinner } from 'react-bootstrap';
 import { Activity } from '../../../app/models/Activity';
+import { useStore } from '../../../app/stores/store';
 
-interface Props {
-	activity: Activity | undefined;
-	closeForm: () => void;
-
-	//this below is temporal
-	createOrEdit: (activity: Activity) => void;
-
-}
-
-function ActivityForm({ activity: selectedActivity, closeForm,createOrEdit }: Props) {
+function ActivityForm() {
+	const {activityStore} = useStore();
+	const {selectedActivity,closeForm,createActivity,updateActivity}=activityStore;
 
 	const initialState = selectedActivity ?? {
 		id: '',
@@ -27,7 +22,7 @@ function ActivityForm({ activity: selectedActivity, closeForm,createOrEdit }: Pr
 	const [activity, setActivity] = useState(initialState);
 
 	function handleSubmit(){
-		createOrEdit(activity);
+		activity.id ? updateActivity(activity) : createActivity(activity);
 	}
 
 	function handleInputChange(event: ChangeEvent<HTMLInputElement>){
@@ -60,7 +55,7 @@ function ActivityForm({ activity: selectedActivity, closeForm,createOrEdit }: Pr
 				<FormGroup className="mb-2">
 					<Row>
 						<Stack gap={4}>
-						<Button type='submit'>Submit</Button>
+						<Button onClick={handleSubmit}>Submit</Button>
 						<Button onClick={closeForm}>Cancel</Button>
 						</Stack>
 						
@@ -71,4 +66,4 @@ function ActivityForm({ activity: selectedActivity, closeForm,createOrEdit }: Pr
 		</Container>
 	);
 }
-export default ActivityForm;
+export default observer(ActivityForm);

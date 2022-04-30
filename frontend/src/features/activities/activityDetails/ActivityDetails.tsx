@@ -1,15 +1,16 @@
 import React from 'react';
 import { Badge, Card, CardGroup, CardImg, Container, Row, Button, Col, Stack } from 'react-bootstrap';
+import Loader from '../../../app/layout/Loader';
 import { Activity } from '../../../app/models/Activity';
+import { useStore } from '../../../app/stores/store';
 import ActivityForm from '../activityForm/ActivityForm';
 
-interface Props {
-	activity: Activity;
-	cancelSelectActivity: () => void;
-	openForm: (id: string) => void;
-}
+function ActivityDetails() {
+	const { activityStore } = useStore();
+	const { selectedActivity: activity, openForm, cancelSelectedActivity } = activityStore;
 
-function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
+	if (!activity) return <Loader />;
+
 	return (
 		<Container fluid="sm">
 			<Card style={{ width: '100%' }}>
@@ -34,7 +35,7 @@ function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
 									Edit
 								</Button>
 
-								<Button size="sm" variant="outline-secondary" onClick={cancelSelectActivity}>
+								<Button size="sm" variant="outline-secondary" onClick={cancelSelectedActivity}>
 									Close View
 								</Button>
 							</Stack>

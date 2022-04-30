@@ -1,18 +1,16 @@
 import React, { Fragment } from 'react';
 import { Button, ButtonGroup, Container, Image, Nav, Navbar, NavbarBrand, NavLink } from 'react-bootstrap';
+import { useStore } from '../../stores/store';
 
-interface Props {
-	openForm: () => void;
-}
-
-export default function NavigationBar({ openForm }: Props) {
+export default function NavigationBar() {
+	const { activityStore } = useStore();
 	return (
 		<Container fluid className="navigationBar">
 			<Navbar bg="dark" expand="lg" variant="dark">
 				<Container>
 					<Image rounded src="/assets/svg/boy.svg" height={50} />
 					<NavbarBrand>Activities</NavbarBrand>
-					<Button variant="outline-light" size="lg" onClick={openForm}>
+					<Button variant="outline-light" size="lg" onClick={() => activityStore.openForm()}>
 						Create activity
 					</Button>
 				</Container>
