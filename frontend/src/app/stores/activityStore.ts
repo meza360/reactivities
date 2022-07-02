@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 export default class ActivityStore {
 	activities: Activity[] = [];
+	activityRegistry = new Map<string,Activity>();
 	selectedActivity: Activity | undefined = undefined;
 	editMode = false;
 	loading = false;
@@ -23,7 +24,7 @@ export default class ActivityStore {
 
 			activities.forEach((activity) => {
 				activity.date = activity.date.split('T')[0];
-				this.activities.push(activity);
+				this.activityRegistry.set(activity.id,activity);
 			});
 			this.setLoadingInitial(false);
 		} catch (error) {
@@ -31,6 +32,10 @@ export default class ActivityStore {
 			this.setLoadingInitial(false);
 		}
 	};
+
+	private getActivity = async (id:string) => {
+		//return this.activities.get(id);
+	}
 
 	setLoadingInitial = (state: boolean) => {
 		this.loadingInitial = state;
