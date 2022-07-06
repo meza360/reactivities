@@ -1,14 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Domain;
 using System.Threading;
 using Persistence;
-using Oracle.ManagedDataAccess.Client;
-using AutoMapper;
+
 
 namespace Application.Activities
 {
@@ -20,30 +17,21 @@ namespace Application.Activities
 
         public class Handler : IRequestHandler<Query, List<Activity>>
         {
-        private readonly DataContext _context;
-        private OracleConnection _connection;
-        private readonly string _connectionString;
-        private OracleCommand _command;
-        private readonly string _commandString;
-
-        private List<Activity> _activities;
+            private readonly DataContext _context;
             public Handler(DataContext context)
             {
             _context = context;
-            _connectionString = "User Id=GMEZAP; Password=developer;Data Source=//oddbbsrv01.sti-gt.local:1521/stigtpdb1";
-            _commandString = "SELECT * FROM \"Activities\"";
             }
 
             //Utilizando Metodos de EntityFramework
-         /*    async Task<List<Activity>> IRequestHandler<Query, List<Activity>>.Handle(Query request, CancellationToken cancellationToken)
+            async Task<List<Activity>> IRequestHandler<Query, List<Activity>>.Handle(Query request, CancellationToken cancellationToken)
             {
                 return await _context.Activities.ToListAsync();
-                
-            } */
+            }
 
 
             //Utilizando comandos de OracleManagedAccess.Client
-            async Task<List<Activity>> IRequestHandler<Query, List<Activity>>.Handle(Query request, CancellationToken cancellationToken)
+            /* async Task<List<Activity>> IRequestHandler<Query, List<Activity>>.Handle(Query request, CancellationToken cancellationToken)
             {
                     try
                     {
@@ -85,7 +73,7 @@ namespace Application.Activities
                     }
             
             return  _activities;
-            }
+            } */
         }
     }
 }
