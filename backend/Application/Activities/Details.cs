@@ -9,7 +9,8 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<Activity>{
+        public class Query : IRequest<Activity>
+        {
             public Int16 Id { get; set; }
         }
         public class Handler : IRequestHandler<Query, Activity>

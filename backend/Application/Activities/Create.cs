@@ -14,7 +14,7 @@ namespace Application.Activities
     public class Create
     {
         public class Command : IRequest{
-            public Activity Activity { get; set; }
+            public Activity? Activity { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -34,7 +34,7 @@ namespace Application.Activities
             }
             async public Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                _context.Activities.Add(request.Activity);
+                _context.Activities?.Add(request.Activity);
                 await _context.SaveChangesAsync();
                 return Unit.Value;
             }
