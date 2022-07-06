@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Oracle.EntityFrameworkCore;
 using MediatR;
-using Persistence;
 
 namespace API.Extensions
 {
@@ -19,32 +12,13 @@ namespace API.Extensions
                     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     /*
                     .WithOrigins("http://localhost:3000",
-                    "http://localhost:19000",
-                    "http://192.168.0.60:3000",
-                    "http://192.168.0.55:19000",
-                    "exp://192.168.0.55:19000",
-                    "exp://192.168.0.60:19000",
-                    "http://localhost:8100");
                     */
                 });
             });
 
-            
+            services.AddAutoMapper(typeof(Application.Core.MappingProfiles).Assembly); //Mapper to edit easily activities
+            services.AddMediatR(typeof(Application.Activities.ListAll.Handler).Assembly); //Mediator service to handle API calls
 
-            services.AddDbContext<DataContext>(opt =>{
-               //opt.UseSqlServer(config.GetConnectionString("LocalSqlServer"));
-                opt.UseOracle(config.GetConnectionString("LocalOracleServer"));
-                
-            });
-
-            
-           
-            
-            services.AddAutoMapper(typeof(Application.Core.MappingProfiles).Assembly);
-
-            services.AddMediatR(typeof(Application.Activities.ListAll.Handler).Assembly);
-
-            
             return services;
         }
     }
