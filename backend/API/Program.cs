@@ -56,20 +56,24 @@ catch (Exception ex)
 finally{
     System.Console.WriteLine("Web API ready to serve");
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Application configuration
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseMiddleware<ExceptionMiddleware>();
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        /* app.UseDeveloperExceptionPage(); */
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseRouting();
+    app.UseCors("CorsPolicy");
+    /* app.Urls.Add("http://192.168.0.150:5000");
+    app.Urls.Add("https://192.168.0.150:5001"); */
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
 }
 
-app.UseRouting();
-app.UseCors("CorsPolicy");
-/* app.Urls.Add("http://192.168.0.150:5000");
-app.Urls.Add("https://192.168.0.150:5001"); */
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
