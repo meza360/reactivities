@@ -9,12 +9,13 @@ using Persistence;
 using AutoMapper;
 using System.Threading;
 using FluentValidation;
+using Application.Core;
 
 namespace Application.Activities
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Activity? Activity { get; set; }
         }
@@ -27,7 +28,7 @@ namespace Application.Activities
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
@@ -38,12 +39,15 @@ namespace Application.Activities
 
             }
 
-            async public Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            async public Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var activity = await _context.Activities.FindAsync(request.Activity.Id);
+                if(activity == null) return null;
                 _mapper.Map(request.Activity, activity);
-                await _context.SaveChangesAsync();
-                return Unit.Value;
+
+                var result = await _context.SaveChangesAsync() > 0;
+                if(!result) return Result<Unit>.Failure("Failed to update activity");
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

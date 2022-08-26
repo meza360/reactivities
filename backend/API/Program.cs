@@ -9,28 +9,29 @@ using Microsoft.Extensions.Configuration;
 using API.Examples;
 using FluentValidation.AspNetCore;
 using Application.Activities;
+using API.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IConfiguration _config = builder.Configuration;
 
 // Add services to the container.
+{
+    builder.Services.AddControllers()
+    .AddFluentValidation( //Adds FluentValidation from general assemblies
+        config => {
+            config.RegisterValidatorsFromAssemblyContaining<Create>();
+        }
+    );
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers()
-.AddFluentValidation( //Adds FluentValidation from general assemblies
-    config => {
-        config.RegisterValidatorsFromAssemblyContaining<Create>();
-    }
-);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
+    //builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
+    builder.Services.AddSqlServerServices(_config);
+}
 
-builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
-builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
-
-
-WebApplication app = builder.Build();
- 
+WebApplication app = builder.Build(); 
 IServiceScope scope = app.Services.CreateScope();
 IServiceProvider serviceProvider = scope.ServiceProvider;
 DataContext context = serviceProvider.GetRequiredService<DataContext>();
