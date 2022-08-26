@@ -9,28 +9,29 @@ using Microsoft.Extensions.Configuration;
 using API.Examples;
 using FluentValidation.AspNetCore;
 using Application.Activities;
+using API.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IConfiguration _config = builder.Configuration;
 
 // Add services to the container.
+{
+    builder.Services.AddControllers()
+    .AddFluentValidation( //Adds FluentValidation from general assemblies
+        config => {
+            config.RegisterValidatorsFromAssemblyContaining<Create>();
+        }
+    );
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers()
-.AddFluentValidation( //Adds FluentValidation from general assemblies
-    config => {
-        config.RegisterValidatorsFromAssemblyContaining<Create>();
-    }
-);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
+    //builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
+    builder.Services.AddSqlServerServices(_config);
+}
 
-builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
-builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
-
-
-WebApplication app = builder.Build();
- 
+WebApplication app = builder.Build(); 
 IServiceScope scope = app.Services.CreateScope();
 IServiceProvider serviceProvider = scope.ServiceProvider;
 DataContext context = serviceProvider.GetRequiredService<DataContext>();
@@ -56,20 +57,24 @@ catch (Exception ex)
 finally{
     System.Console.WriteLine("Web API ready to serve");
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Application configuration
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseMiddleware<ExceptionMiddleware>();
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        /* app.UseDeveloperExceptionPage(); */
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseRouting();
+    app.UseCors("CorsPolicy");
+    /* app.Urls.Add("http://192.168.0.150:5000");
+    app.Urls.Add("https://192.168.0.150:5001"); */
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
 }
 
-app.UseRouting();
-app.UseCors("CorsPolicy");
-/* app.Urls.Add("http://192.168.0.150:5000");
-app.Urls.Add("https://192.168.0.150:5001"); */
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
