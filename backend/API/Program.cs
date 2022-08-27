@@ -10,13 +10,22 @@ using API.Examples;
 using FluentValidation.AspNetCore;
 using Application.Activities;
 using API.Middleware;
+using Microsoft.AspNetCore.Identity;
+using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IConfiguration _config = builder.Configuration;
 
 // Add services to the container.
 {
-    builder.Services.AddControllers()
+    builder.Services.AddControllers(
+        opt => {
+            AuthorizationPolicy policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            opt.Filters.Add(new AuthorizeFilter(policy));
+        }
+    )
     .AddFluentValidation( //Adds FluentValidation from general assemblies
         config => {
             config.RegisterValidatorsFromAssemblyContaining<Create>();
@@ -29,25 +38,28 @@ IConfiguration _config = builder.Configuration;
     builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
     //builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
     builder.Services.AddSqlServerServices(_config);
+
+    builder.Services.AddIdentityServices(_config);
 }
 
 WebApplication app = builder.Build(); 
-IServiceScope scope = app.Services.CreateScope();
-IServiceProvider serviceProvider = scope.ServiceProvider;
-DataContext context = serviceProvider.GetRequiredService<DataContext>();
+IServiceScope _scope = app.Services.CreateScope();
+IServiceProvider _serviceProvider = _scope.ServiceProvider;
+DataContext _context = _serviceProvider.GetRequiredService<DataContext>();
+UserManager<AppUser> _userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
 
 //Migrates data automatically at each start
 try
 {
-    if(!context.Database.EnsureCreated()) 
+    if(!_context.Database.EnsureCreated()) 
     {
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
+        await _context.Database.EnsureDeletedAsync();
+        await _context.Database.EnsureCreatedAsync();
         System.Console.WriteLine("Database is not created, attempting to create and migrate");
-        await context.Database.MigrateAsync();
+        await _context.Database.MigrateAsync();
     }
         System.Console.WriteLine("Adding example data to database");
-        await Seed.AddActivities(context);
+        await Seed.AddActivities(_context,_userManager);
 }
 catch (Exception ex)
 {
@@ -73,6 +85,7 @@ finally{
     /* app.Urls.Add("http://192.168.0.150:5000");
     app.Urls.Add("https://192.168.0.150:5001"); */
     app.UseHttpsRedirection();
+    app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
     app.Run();
