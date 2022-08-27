@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Oracle.ManagedDataAccess.Client;
 using Application.Core;
 
 namespace API.Controllers
@@ -11,9 +10,9 @@ namespace API.Controllers
     [ApiController]
     public class BaseApiController : ControllerBase
     {
-        private readonly ILogger<BaseApiController> _logger;
-        private IMediator _mediator;
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        private readonly ILogger<BaseApiController>? _logger;
+        private IMediator? _mediator;
+        protected IMediator? Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
         protected ActionResult HandleResult<T>(Result<T> result)
         {
