@@ -5,8 +5,8 @@ import ValidationErrors from '../components/ValidationErrors';
 import { useState } from 'react';
 
 export default function TestErrors() {
-	const [ errors, setErrors ] = useState([]);
-	const baseUrl = 'http://localhost:5000/api/';
+	const [errors, setErrors] = useState([]);
+	const baseUrl = 'https://localhost:5001/api/';
 
 	function handleNotFound() {
 		axios.get(baseUrl + 'buggy/not-found').catch((err) => console.log(err.response));
@@ -45,7 +45,10 @@ export default function TestErrors() {
 					<Button onClick={handleBadGuid} content="Bad Guid" basic primary />
 				</Button.Group>
 			</Segment>
-			<ValidationErrors errorArray={errors} />
+			{errors &&
+				<ValidationErrors errorArray={errors} />
+			}
+
 		</div>
 	);
 }
