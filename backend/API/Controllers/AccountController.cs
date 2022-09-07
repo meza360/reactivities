@@ -55,7 +55,7 @@ namespace API.Controllers
                 UserName = registerDto.UserName
             };
             IdentityResult result = await _userManager.CreateAsync(user, registerDto.Password);
-            if(result.Succeeded) return CreateUserObject(user);
+            if (result.Succeeded) return CreateUserObject(user);
             return BadRequest("Problem registering user");
         }
 
@@ -69,7 +69,8 @@ namespace API.Controllers
 
         private UserDto CreateUserObject(AppUser user)
         {
-            return new UserDto{
+            return new UserDto
+            {
                 DisplayName = user.DisplayName,
                 Image = null,
                 Token = _tokenService.CreateToken(user),
