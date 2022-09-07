@@ -3,11 +3,11 @@ import { Form, Label } from 'semantic-ui-react';
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
 
 function MyDateInput(props: ReactDatePickerProps) {
-	const [ field, meta, helpers ] = useField(props.name);
+	const [field, meta, helpers] = useField(props.name);
 
 	return (
 		<Form.Group>
-			<Form.Field error={meta.touched && !!meta.error}>
+			<Form.Field error={meta.touched && !!meta.error ? 'error' : undefined}>
 				<DatePicker
 					{...field}
 					{...props}

@@ -9,11 +9,11 @@ interface Props {
 }
 
 function MySelectInput(props: Props) {
-	const [ field, meta, helpers ] = useField(props.name);
+	const [field, meta, helpers] = useField(props.name);
 
 	return (
 		<Form.Group>
-			<Form.Field error={meta.touched && !!meta.error}>
+			<Form.Field error={meta.touched && !!meta.error ? true : false}>
 				<Select
 					clearable
 					options={props.options}
@@ -22,7 +22,7 @@ function MySelectInput(props: Props) {
 					onBlur={() => helpers.setTouched(true)}
 					placeholder={props.placeholder}
 				/>
-				{meta.touched && meta.error ? (
+				{meta.touched && !!meta.error ? (
 					<ErrorMessage name="title" render={(error) => <Label basic color="red" content={error} />} />
 				) : null}
 			</Form.Field>

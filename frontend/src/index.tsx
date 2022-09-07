@@ -13,13 +13,13 @@ import { createBrowserHistory } from 'history';
 export const historyObject = createBrowserHistory();
 const root = ReactDOM.createRoot(document.getElementById('root')); // createRoot(container!) if you use TypeScript
 root.render(
-	/* <React.StrictMode> */
-	<StoreContext.Provider value={store}>
-		<HistoryRouter history={historyObject}>
-			<App />
-		</HistoryRouter>
-	</StoreContext.Provider>
-	/* </React.StrictMode> */
+	<React.StrictMode>
+		<StoreContext.Provider value={store}>
+			<HistoryRouter history={historyObject}>
+				<App />
+			</HistoryRouter>
+		</StoreContext.Provider>
+	</React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
