@@ -16,20 +16,8 @@ axios.defaults.baseURL = 'https://localhost:5001/api';
 
 axios.interceptors.response.use(
 	async (response) => {
-		try {
-			await sleep(1000);
-			return response;
-		} catch (error) {
-			console.log(error);
-			return await Promise.reject(error);
-		}
-		/* try {
 		await sleep(1000);
 		return response;
-	} catch (error) {
-		console.log(error);
-		return await Promise.reject(error);
-	} */
 	},
 	(e: AxiosError) => {
 		const { data, status } = e.response!;
@@ -50,7 +38,6 @@ axios.interceptors.response.use(
 				toast.error('unauthorised');
 				break;
 			case 404:
-				toast.info('not-found');
 				history.push('/notFound');
 				break;
 			case 500:
@@ -78,8 +65,15 @@ const Activities = {
 	delete: (id: string) => requests.del<void>(`/activities/${id}`)
 };
 
+const Account = {
+	current: () => requests.get<User>('/account'),
+	login: (user: UserFormValues) => requests.post<User>('/account/login', user),
+	register: (user: UserFormValues) => requests.post<User>('/account/register', user)
+}
+
 const agent = {
-	Activities
+	Activities,
+	Account
 };
 
 export default agent;
