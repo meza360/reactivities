@@ -29,22 +29,24 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto logingDto)
         {
             AppUser user = await _userManager.FindByEmailAsync(logingDto.Email);
-            if(user == null) return Unauthorized();
-            var result = await _signInManager.CheckPasswordSignInAsync(user, logingDto.Password,false);
-            if(result.Succeeded) return CreateUserObject(user);
+            if (user == null) return Unauthorized();
+            var result = await _signInManager.CheckPasswordSignInAsync(user, logingDto.Password, false);
+            if (result.Succeeded) return CreateUserObject(user);
             return Unauthorized();
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if(await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
             {
-                return BadRequest("Email already taken");
+                ModelState.AddModelError("email", "Email already taken");
+                return ValidationProblem();
             }
-            if(await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName))
+            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName))
             {
-                return BadRequest("Username already taken");
+                ModelState.AddModelError("username", "Username already taken");
+                return ValidationProblem();
             }
             var user = new AppUser
             {
