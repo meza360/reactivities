@@ -20,19 +20,19 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
-          include-prerelease: true
+          include-prerelease: false
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./backend --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Publish with dotnet
+        run: dotnet publish ./backend -c Release -o ${{env.DOTNET_ROOT}}/reactivities/build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/reactivities/build
 
   deploy:
     runs-on: ubuntu-latest
