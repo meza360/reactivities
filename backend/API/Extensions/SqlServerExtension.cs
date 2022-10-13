@@ -15,7 +15,7 @@ namespace API.Extensions
         {
             services.AddDbContext<DataContext>(
                 options => {
-                    options.UseSqlServer(config.GetConnectionString("LocalDb"));
+                    options.UseSqlServer(config.GetConnectionString("AzureSqlSrv01"));
                 }
             );
             return services;
