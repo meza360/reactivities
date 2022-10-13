@@ -21,13 +21,15 @@ IConfiguration _config = builder.Configuration;
 // Add services to the container.
 {
     builder.Services.AddControllers(
-        opt => {
+        opt =>
+        {
             AuthorizationPolicy policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             opt.Filters.Add(new AuthorizeFilter(policy));
         }
     )
     .AddFluentValidation( //Adds FluentValidation from general assemblies
-        config => {
+        config =>
+        {
             config.RegisterValidatorsFromAssemblyContaining<Create>();
         }
     );
@@ -42,7 +44,7 @@ IConfiguration _config = builder.Configuration;
     builder.Services.AddIdentityServices(_config);
 }
 
-WebApplication app = builder.Build(); 
+WebApplication app = builder.Build();
 IServiceScope _scope = app.Services.CreateScope();
 IServiceProvider _serviceProvider = _scope.ServiceProvider;
 DataContext _context = _serviceProvider.GetRequiredService<DataContext>();
@@ -51,22 +53,23 @@ UserManager<AppUser> _userManager = _serviceProvider.GetRequiredService<UserMana
 //Migrates data automatically at each start
 try
 {
-    if(!_context.Database.EnsureCreated()) 
+    if (!_context.Database.EnsureCreated())
     {
         await _context.Database.EnsureDeletedAsync();
         await _context.Database.EnsureCreatedAsync();
         System.Console.WriteLine("Database is not created, attempting to create and migrate");
         await _context.Database.MigrateAsync();
     }
-        System.Console.WriteLine("Adding example data to database");
-        await Seed.AddActivities(_context,_userManager);
+    System.Console.WriteLine("Adding example data to database");
+    await Seed.AddActivities(_context, _userManager);
 }
 catch (Exception ex)
 {
     Console.WriteLine("Error en la creacion: \n" + ex.ToString());
     System.Console.WriteLine("Errores desde: " + ex.StackTrace);
 }
-finally{
+finally
+{
     System.Console.WriteLine("Web API ready to serve");
 }
 // Application configuration
@@ -82,8 +85,8 @@ finally{
 
     app.UseRouting();
     app.UseCors("CorsPolicy");
-    /* app.Urls.Add("http://192.168.0.150:5000");
-    app.Urls.Add("https://192.168.0.150:5001"); */
+    //app.Urls.Add("http://localhost:5000");
+    app.Urls.Add("https://localhost:5001");
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
