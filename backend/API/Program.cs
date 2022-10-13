@@ -78,15 +78,15 @@ System.Console.WriteLine("Web API ready to serve");
     // Configure the HTTP request pipeline.
     /* if (app.Environment.IsDevelopment())
     { */
-        /* app.UseDeveloperExceptionPage(); */
-        app.UseSwagger();
-        app.UseSwaggerUI();
+    /* app.UseDeveloperExceptionPage(); */
+    app.UseSwagger();
+    app.UseSwaggerUI();
     /* } */
 
     app.UseRouting();
     app.UseCors("CorsPolicy");
     //app.Urls.Add("http://localhost:5000");
-    //app.Urls.Add("https://eastus-reactivities-api.azurewebsites.net:5001");
+    app.Urls.Add("http://eastus-reactivities-api.azurewebsites.net:5000");
     //app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
