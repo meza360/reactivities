@@ -86,6 +86,7 @@ System.Console.WriteLine("Web API ready to serve");
     app.UseRouting();
     app.UseCors("CorsPolicy");
     //app.Urls.Add("http://localhost:5000");
+    app.Urls.Add("http://0.0.0.0:5000");
     //app.Urls.Add("http://eastus-reactivities-api.azurewebsites.net:5000");
     //app.UseHttpsRedirection();
     app.UseAuthentication();
