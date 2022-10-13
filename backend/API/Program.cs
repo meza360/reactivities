@@ -45,7 +45,7 @@ IConfiguration _config = builder.Configuration;
 }
 
 WebApplication app = builder.Build();
-IServiceScope _scope = app.Services.CreateScope();
+/* IServiceScope _scope = app.Services.CreateScope();
 IServiceProvider _serviceProvider = _scope.ServiceProvider;
 DataContext _context = _serviceProvider.GetRequiredService<DataContext>();
 UserManager<AppUser> _userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
@@ -69,9 +69,9 @@ catch (Exception ex)
     System.Console.WriteLine("Errores desde: " + ex.StackTrace);
 }
 finally
-{
-    System.Console.WriteLine("Web API ready to serve");
-}
+{ */
+System.Console.WriteLine("Web API ready to serve");
+//}
 // Application configuration
 {
     app.UseMiddleware<ExceptionMiddleware>();
