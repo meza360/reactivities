@@ -71,23 +71,23 @@ catch (Exception ex)
 finally
 { */
 System.Console.WriteLine("Web API ready to serve");
-//}
+/* } */
 // Application configuration
 {
     app.UseMiddleware<ExceptionMiddleware>();
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
+    /* if (app.Environment.IsDevelopment())
+    { */
         /* app.UseDeveloperExceptionPage(); */
         app.UseSwagger();
         app.UseSwaggerUI();
-    }
+    /* } */
 
     app.UseRouting();
     app.UseCors("CorsPolicy");
     //app.Urls.Add("http://localhost:5000");
-    app.Urls.Add("https://eastus-reactivities-api.azurewebsites.net:5001");
-    app.UseHttpsRedirection();
+    //app.Urls.Add("https://eastus-reactivities-api.azurewebsites.net:5001");
+    //app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
