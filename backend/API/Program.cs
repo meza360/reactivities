@@ -9,44 +9,57 @@ using Microsoft.Extensions.Configuration;
 using API.Examples;
 using FluentValidation.AspNetCore;
 using Application.Activities;
+using API.Middleware;
+using Microsoft.AspNetCore.Identity;
+using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IConfiguration _config = builder.Configuration;
 
 // Add services to the container.
+{
+    builder.Services.AddControllers(
+        opt => {
+            AuthorizationPolicy policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            opt.Filters.Add(new AuthorizeFilter(policy));
+        }
+    )
+    .AddFluentValidation( //Adds FluentValidation from general assemblies
+        config => {
+            config.RegisterValidatorsFromAssemblyContaining<Create>();
+        }
+    );
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers()
-.AddFluentValidation( //Adds FluentValidation from general assemblies
-    config => {
-        config.RegisterValidatorsFromAssemblyContaining<Create>();
-    }
-);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
+    //builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
+    builder.Services.AddSqlServerServices(_config);
 
-builder.Services.AddApplicationServices(_config); //Adds Mediator, Mapper, other services to container
-builder.Services.AddSqliteServices(_config); //Adds Sqlite services to container
+    builder.Services.AddIdentityServices(_config);
+}
 
-
-WebApplication app = builder.Build();
- 
-IServiceScope scope = app.Services.CreateScope();
-IServiceProvider serviceProvider = scope.ServiceProvider;
-DataContext context = serviceProvider.GetRequiredService<DataContext>();
+WebApplication app = builder.Build(); 
+IServiceScope _scope = app.Services.CreateScope();
+IServiceProvider _serviceProvider = _scope.ServiceProvider;
+DataContext _context = _serviceProvider.GetRequiredService<DataContext>();
+UserManager<AppUser> _userManager = _serviceProvider.GetRequiredService<UserManager<AppUser>>();
 
 //Migrates data automatically at each start
 try
 {
-    if(!context.Database.EnsureCreated()) 
+    if(!_context.Database.EnsureCreated()) 
     {
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
+        await _context.Database.EnsureDeletedAsync();
+        await _context.Database.EnsureCreatedAsync();
         System.Console.WriteLine("Database is not created, attempting to create and migrate");
-        await context.Database.MigrateAsync();
+        await _context.Database.MigrateAsync();
     }
         System.Console.WriteLine("Adding example data to database");
-        await Seed.AddActivities(context);
+        await Seed.AddActivities(_context,_userManager);
 }
 catch (Exception ex)
 {
@@ -56,20 +69,25 @@ catch (Exception ex)
 finally{
     System.Console.WriteLine("Web API ready to serve");
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Application configuration
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseMiddleware<ExceptionMiddleware>();
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        /* app.UseDeveloperExceptionPage(); */
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseRouting();
+    app.UseCors("CorsPolicy");
+    /* app.Urls.Add("http://192.168.0.150:5000");
+    app.Urls.Add("https://192.168.0.150:5001"); */
+    app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
 }
 
-app.UseRouting();
-app.UseCors("CorsPolicy");
-/* app.Urls.Add("http://192.168.0.150:5000");
-app.Urls.Add("https://192.168.0.150:5001"); */
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.MapControllers();
-app.Run();

@@ -9,11 +9,9 @@ body {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
-
-.loader-container {
-	top: 50%;
-	position: absolute;
-	transform: translate(0, -50%);
-	height: 100%;
-	margin: 10%;
+.ui.form .fields > .field {
+	width: 100%;
+}
+.react-datepicker-wrapper {
+	width: 100%;
 }
